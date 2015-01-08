@@ -199,7 +199,8 @@ def install(pkgs=None,  # pylint: disable=R0912,R0913,R0914
             __env__=None,
             saltenv='base',
             env_vars=None,
-            use_vt=False):
+            use_vt=False,
+            reset_system_locale=True):
     '''
     Install packages with pip
 
@@ -317,6 +318,9 @@ def install(pkgs=None,  # pylint: disable=R0912,R0913,R0914
         Set environment variables that some builds will depend on. For example,
         a Python C-module may have a Makefile that needs INCLUDE_PATH set to
         pick up a header file while compiling.
+    reset_system_locale
+        Resets the system locale environment variable 'LC_ALL' to 'C' by default.
+        Allows to use current system locale when set to False
 
 
     CLI Example:
@@ -587,7 +591,7 @@ def install(pkgs=None,  # pylint: disable=R0912,R0913,R0914
         os.environ.update(env_vars)
 
     try:
-        cmd_kwargs = dict(runas=user, cwd=cwd, saltenv=saltenv, use_vt=use_vt)
+        cmd_kwargs = dict(runas=user, cwd=cwd, saltenv=saltenv, use_vt=use_vt, reset_system_locale=reset_system_locale)
         if bin_env and os.path.isdir(bin_env):
             cmd_kwargs['env'] = {'VIRTUAL_ENV': bin_env}
         return __salt__['cmd.run_all'](' '.join(cmd), **cmd_kwargs)
